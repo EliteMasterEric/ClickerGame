@@ -83,7 +83,7 @@ Game.Worker = function(name, readablename, baseefficiency, price, isunlocked) {
 		log("buy:"+this.name);
 		if(Game.moneyCurrent >= this.getPrice()) {
 			Game.moneyCurrent -= this.getPrice();
-			this.bought = 1;
+			this.bought += 1;
 		}
 	}
 	return this;
