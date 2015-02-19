@@ -1,0 +1,82 @@
+<!doctype html>
+<!--
+		Hey! Welcome to my code!
+		Feel free to poke around.
+		    I don't mind.
+            
+        P.S. If you want to cheat,
+        there's a cheat() method
+        you can run from the console.
+        If you're so inclined.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>Clicker</title>
+<link href="HTML5_ClickerSite.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
+
+<script type="text/javascript" src="./javascript/Main.js"></script>
+<script type="text/javascript" src="./javascript/TabMenu.js"></script>
+
+<body class="nomargins" id="container">
+	<div class="header">
+    Clicker Game
+    </div>
+    
+	<div class="containerside" id="container_left" style="float:left">
+		<div class="upgradescolumn" id="column_upgrades">
+        	<div class="columnheader">
+	    		<p>Upgrades</p>
+            </div>
+		</div>
+	</div>
+    
+	<div class="containercenter" id="container_center" style="float:left">
+    	<div class="clickcolumn" id="column_click">
+    	  <p class="moneytext">$<strong id="money_current">0</strong></p>
+    	  <button onClick="onMoneyClicked()" class="clickbutton" id="button_click"><p>$$$</p></button>
+		</div>
+        <div class="menucolumn" id="menucolumn">
+        	<div class="menubuttons">
+	      		<button class="menubutton" id="button_menu_stats" onClick="setCurrentOption(0)">Stats</button>
+    	    	<button class="menubutton" id="button_menu_options" onClick="setCurrentOption(1)">Options</button> 
+            </div>
+			<div class="menucontents" style="display:block" id="menucontents_stats">
+	            <br>
+                $<b id="money_per_click"> -1 </b> per click<br>
+           		$<b id="money_per_second"> -1 </b> per second<br>
+                <br>
+            	$<b id="money_all_time"> -1 </b> all time earnings<br>
+              	<b id="clicks_all_time"> -1 </b> all time clicks<br>
+                <br>
+                <b id="current_upgrades">-1</b>/<b id="total_upgrades">-1</b> upgrades purchased
+   			</div>
+            <div class="menucontents" style="display:none" id="menucontents_options">
+            	<br>
+				Format Type: (DISABLED)
+                <br><input name="formatType" type="radio" disabled="true" value="words">Words</input>
+				<br><input name="formatType" type="radio" disabled="true" value="abbreviations">Abbreviations</input>
+   				<br><input name="formatType" type="radio" disabled="true" value="exponential">Exponential</input>
+                <br><input name="formatType" type="radio" value="raw" checked="checked">Raw</input>
+                <br>
+                Save/Load: (COMING SOON)
+   			</div>
+		</div>
+	</div>
+    
+    <div class="containerside" style="float:left">
+    	<div class="workerscolumn" id="column_workers">
+        	<div class="columnheader">
+	    		<p>Workers</p>
+            </div>
+            
+		</div>
+	</div>
+    
+    <div class="footer">
+    Footer
+    </div>
+</body>
+</html>

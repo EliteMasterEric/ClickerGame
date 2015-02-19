@@ -1,0 +1,212 @@
+@charset "utf-8";
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100vh;	
+	width: 100vw;
+}
+body {
+	font: 100%/1.4 Verdana, Arial, Helvetica, sans-serif;
+	background-color: #E800FF;
+	color: #000;
+}
+/*---Functional classes---*/
+.nomargins {
+	margin: 0;
+	padding: 0;	
+}
+
+ul, ol, dl, h1, h2, h3, h4, h5, h6, p {
+	margin: 0;
+	padding: 0;
+}
+a img { 
+	/* Removes blue border displayed around image links in some browsers */
+	border: none;
+}
+
+/*Link stylizing*/
+a:link {
+	color: #42413C;
+	text-decoration: underline; /* unless you style your links to look extremely unique, it's best to provide underlines for quick visual identification */
+}
+a:visited {
+	color: #6E6C64;
+	text-decoration: underline;
+}
+a:hover, a:active, a:focus { /* this group of selectors will give a keyboard navigator the same hover experience as the person using a mouse. */
+	text-decoration: none;
+}
+/*---Containers---*/
+.header, .footer {
+	width: 100vw;
+	height: 10vh;
+	float: left;
+	display: inline-block;
+	text-align: center;
+	background-color: #CCC;
+}
+.header {
+	font-size: xx-large;
+	font-weight: bold;	
+}
+.containerside {
+	width: 20vw;
+	height: 80vh;
+	background-color: #E800FF;
+	float: left;
+	display: inline-block;
+	overflow: inherit;
+	position: relative;
+}
+.containercenter {
+	width: 60vw;
+	height: 80vh;
+	float: left;
+	display:inline-block;
+	background-color: #E800FF;
+	overflow: inherit;
+	position: relative;
+}
+/*---Columns---*/
+.upgradescolumn {
+	width: 100%;
+	height: 100%;
+	background-color: #BBA;
+	overflow: auto;
+}
+.workerscolumn {
+	width: 100%;
+	height: 100%;
+	background-color: #BBA;
+	overflow: auto;
+}
+
+.clickcolumn {
+	width: 100%;
+	background-color: #BAF;
+	height: 35%;
+	text-align: center;
+	position: relative;
+}
+.menucolumn {
+	width: 100%;
+	height: 65%;
+	text-align: center;
+	background-color: #E800FF;
+	padding: 0;
+	margin: 0;
+}
+.menucontents {
+	width: 100%;
+	height: 85%;
+	text-align: center;
+	background-color: #BBD;
+	overflow: auto;
+}
+.menubuttons {
+	height: 15%;
+	width: 100%;	
+}
+
+/*---Headers---*/
+.columnheader {
+	width: 19.75vw;
+	height: auto;
+	background-color: #BAB;
+	float: left;
+	border: 2px solid black;
+	display: block;
+	font-size: x-large;
+	font-weight: bold;
+	text-align: center;
+}
+.columnheader p {
+	position: relative;
+	padding-top: .75vw;
+	padding-bottom: .75vw;
+}
+.moneytext {
+	font-size: x-large;	
+}
+/*---Buttons---*/
+
+.menubutton {
+	font: inherit;
+	font-size:x-large;
+	background-color: #BBA;
+	width: 50%;
+	float: left;
+	border: none;
+	border: 2px solid black;
+	display: block;
+	height: 100%;
+}
+.menubuttonselected {
+	font: inherit;
+	font-size:x-large;
+	background-color: #BB2;
+	color: white;
+	border: none;
+	border: 2px solid white;
+}
+.buybuttonleft {
+	font: inherit;
+	width: 19.75vw;
+	height: auto;
+	background-color: #ABB;
+	float: left;
+	border: none;
+	border: 2px solid black;
+	display: block;
+	text-align: left;
+	border-bottom-right-radius: 5px;
+	border-top-right-radius: 5px;
+}
+.buybuttonright {
+	font: inherit;
+	width: 19.75vw;
+	height: auto;
+	background-color: #ABB;
+	float: left;
+	border: none;
+	border: 2px solid black;
+	display: block;
+	text-align: left;
+	border-bottom-left-radius: 5px;
+	border-top-left-radius: 5px;
+}
+.buybuttonlocked {
+    background-color: #EAA !important;	
+}
+.clickbutton {
+	position: relative;
+	height: auto;
+	top: 10%;
+	width: 36%;
+	background-color: #E9E842;
+	border: none;
+	border-radius: 20px;
+	border-style: solid;
+	border-width: 5%;
+	border-bottom-color: black;
+	font: inherit;
+}
+.clickbutton:active {
+	padding-top: 2px;
+}
+.clickbutton p {
+	padding: 2vw 1vh;
+}
+.upgradebutton {
+	padding: 1vw 1vh;
+	background-color: #D17537;
+	border-color: transparent;
+	font: inherit;
+}
+.purchasebutton {
+	padding: 1vw 1vh;
+	background-color: #328FBC;
+	border-color: transparent;
+	font: inherit;
+}
