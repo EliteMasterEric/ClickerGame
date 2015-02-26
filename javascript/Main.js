@@ -3,6 +3,7 @@
 var jQuery;
 
 var workers = [];
+var workersByID = [];
 var upgrades = [];
 var upgradesByID = [];
 
@@ -23,25 +24,23 @@ var currentValues = {
 	moneyPerSecond : -1,
 	moneyPerClick : -1,
 	unlockedWorkers : [],
+	unlockedWorkersByID : [],
 	unlockedUpgrades : [],
 	unlockedUpgradesByID : [],
 	workerEfficiency : [],
 	workerPrices : [],
 	upgradePrices : [],
 	totalWorkers : -1,
-	currentUpgrades : -1
+	currentUpgrades : -1,
+	moneyCurrent : 0,
+	moneyAllTime : 0,
+	clicksAllTime : 0,
+	version : "v0.3"
 }
-
-//Values for the current game.
-var Game = { };
 
 //Initialization
 $(document).ready( function(){
-    log('Initializing Clicker Game...');
-	Game.version = "v0.2";
-    Game.moneyCurrent = 0;
-    Game.moneyAllTime = 0;
-	Game.clicksAllTime = 0;
+    log('Initializing Clicker Game '+currentValues.version+' ...');
 
 	//Change page title.
 	jQuery = jQuery(this);
@@ -55,7 +54,7 @@ $(document).ready( function(){
 });
 
 var upgradeID = -1;
-Game.Upgrade = function(name, readableName, price, type, isUnlocked, description) {
+Upgrade = function(name, readableName, price, type, isUnlocked, description) {
 	this.name = name;
 	this.readableName = readableName;
 	//0 = worker
@@ -84,8 +83,8 @@ Game.Upgrade = function(name, readableName, price, type, isUnlocked, description
 	}
 	
 	this.buy = function() {
-		if(Game.moneyCurrent >= currentValues.upgradePrices[this.name] && this.bought == 0) {
-			Game.moneyCurrent -= currentValues.upgradePrices[this.name];
+		if(currentValues.moneyCurrent >= currentValues.upgradePrices[this.name] && this.bought == 0) {
+			currentValues.moneyCurrent -= currentValues.upgradePrices[this.name];
 			this.bought = 1;
 			updateRequired.currentUpgrades = true;
 			switch(this.type) {
@@ -113,7 +112,7 @@ Game.Upgrade = function(name, readableName, price, type, isUnlocked, description
 }
 
 var workerID = -1;
-Game.Worker = function(name, readableName, baseEfficiency, price, isUnlocked) {
+Worker = function(name, readableName, baseEfficiency, price, isUnlocked) {
 	this.name = name;
 	this.readableName = readableName;
 	this.basePrice = price;
@@ -121,6 +120,7 @@ Game.Worker = function(name, readableName, baseEfficiency, price, isUnlocked) {
 	workerID++;
 	this.id = workerID;
 	currentValues.unlockedWorkers[this.name] = {name : this.name, id : this.workerID, unlocked : false};
+	currentValues.unlockedWorkersByID[this.id] = {name : this.name, id : this.workerID, unlocked : false};
 	this.baseEfficiency = baseEfficiency;
 	currentValues.workerEfficiency[this.name] = -1;
 	this.bought = 0;
@@ -133,8 +133,8 @@ Game.Worker = function(name, readableName, baseEfficiency, price, isUnlocked) {
 	}
 	
 	this.buy = function() {
-		if(Game.moneyCurrent >= currentValues.workerPrices[this.name]) {
-			Game.moneyCurrent -= currentValues.workerPrices[this.name];
+		if(currentValues.moneyCurrent >= currentValues.workerPrices[this.name]) {
+			currentValues.moneyCurrent -= currentValues.workerPrices[this.name];
 			this.bought++;
 			updateRequired.moneyPerSecond = true;
 			updateRequired.workerPrices = true;
@@ -143,43 +143,44 @@ Game.Worker = function(name, readableName, baseEfficiency, price, isUnlocked) {
 	}
 	
 	workers[this.name] = this;
+	workersByID[this.id] = this;
 	this.updatePrice();
 	
 	return this;
 }
 
 function createUpgrades() {
-	new Game.Upgrade('fiveworkercost', '5% Lower Worker Costs', 250, 2, function() { return (currentValues.totalWorkers >= 10); }, 'multiplicative');
-	new Game.Upgrade('tenworkercost', '10% Lower Worker Costs', 500, 2, function() { return (currentValues.totalWorkers >= 50); }, 'multiplicative');
-	new Game.Upgrade('fifteenworkercost', '15% Lower Worker Costs', 1000, 2, function() { return (currentValues.totalWorkers >= 100); }, 'multiplicative');
+	new Upgrade('fiveworkercost', '5% Lower Worker Costs', 250, 2, function() { return (currentValues.totalWorkers >= 10); }, 'multiplicative');
+	new Upgrade('tenworkercost', '10% Lower Worker Costs', 500, 2, function() { return (currentValues.totalWorkers >= 50); }, 'multiplicative');
+	new Upgrade('fifteenworkercost', '15% Lower Worker Costs', 1000, 2, function() { return (currentValues.totalWorkers >= 100); }, 'multiplicative');
 
-	new Game.Upgrade('doubleclick','x2 Click Power', 50, 1, function() { return (Game.moneyCurrent >= 35); }, 'multiplicative');
-	new Game.Upgrade('tripleclick','x3 Click Power', 125, 1, function() { return (Game.moneyCurrent >= 95); }, 'multiplicative');
-	new Game.Upgrade('quadrupleclick','x4 Click Power', 500, 1, function() { return (Game.moneyAllTime >= 275); }, 'multiplicative');
-	new Game.Upgrade('quintupleclick','x5 Click Power', 2500, 1, function() { return (Game.moneyAllTime >= 1750); }, 'multiplicative');
+	new Upgrade('doubleclick','x2 Click Power', 50, 1, function() { return (currentValues.moneyCurrent >= 35); }, 'multiplicative');
+	new Upgrade('tripleclick','x3 Click Power', 125, 1, function() { return (currentValues.moneyCurrent >= 95); }, 'multiplicative');
+	new Upgrade('quadrupleclick','x4 Click Power', 500, 1, function() { return (currentValues.moneyAllTime >= 275); }, 'multiplicative');
+	new Upgrade('quintupleclick','x5 Click Power', 2500, 1, function() { return (currentValues.moneyAllTime >= 1750); }, 'multiplicative');
 	
-	new Game.Upgrade('fiveupgradecost', '5% Lower Upgrade Costs', 250, 2, function() { return (currentValues.currentUpgrades >= 3); }, 'multiplicative');
-	new Game.Upgrade('tenupgradecost', '10% Lower Upgrade Costs', 500, 2, function() { return (currentValues.currentUpgrades >= 8); }, 'multiplicative');
-	new Game.Upgrade('fifteenupgradecost', '15% Lower Upgrade Costs', 1000, 2, function() { return (currentValues.currentUpgrades >= 15); }, 'multiplicative');
+	new Upgrade('fiveupgradecost', '5% Lower Upgrade Costs', 250, 2, function() { return (currentValues.currentUpgrades >= 3); }, 'multiplicative');
+	new Upgrade('tenupgradecost', '10% Lower Upgrade Costs', 500, 2, function() { return (currentValues.currentUpgrades >= 8); }, 'multiplicative');
+	new Upgrade('fifteenupgradecost', '15% Lower Upgrade Costs', 1000, 2, function() { return (currentValues.currentUpgrades >= 15); }, 'multiplicative');
 	
-	new Game.Upgrade('doubleworker','x2 Worker Efficiency', 100, 0, function() { return (workers['worker'].bought >= 5); }, 'multiplicative');
-	new Game.Upgrade('tripleworker','x3 Worker Efficiency', 500, 0, function() { return (workers['worker'].bought >= 25); }, 'multiplicative');
-	new Game.Upgrade('doublebuilder','x2 Builder Efficiency', 250, 0, function() { return (workers['builder'].bought >= 5); }, 'multiplicative');
-	new Game.Upgrade('triplebuilder','x3 Builder Efficiency', 1250, 0, function() { return (workers['builder'].bought >= 25); }, 'multiplicative');
-	new Game.Upgrade('doublefactory','x2 Factory Efficiency', 500, 0, function() { return (workers['factory'].bought >= 5); }, 'multiplicative');	
-	new Game.Upgrade('triplefactory','x2 Factory Efficiency', 2500, 0, function() { return (workers['factory'].bought >= 25); }, 'multiplicative');
-	new Game.Upgrade('doublelargefactory','x2 Large Factory Efficiency', 1000, 0, function() { return (workers['largefactory'].bought >= 5); }, 'multiplicative');
-	new Game.Upgrade('triplelargefactory','x2 Large Factory Efficiency', 5000, 0, function() { return (workers['largefactory'].bought >= 25); }, 'multiplicative');
-	new Game.Upgrade('doublehugefactory','x2 Huge Factory Efficiency', 7500, 0, function() { return (workers['hugefactory'].bought >= 5); }, 'multiplicative');
-	new Game.Upgrade('triplehugefactory','x2 Huge Factory Efficiency', 25000, 0, function() { return (workers['hugefactory'].bought >= 25); }, 'multiplicative');
+	new Upgrade('doubleworker','x2 Worker Efficiency', 100, 0, function() { return (workers['worker'].bought >= 5); }, 'multiplicative');
+	new Upgrade('tripleworker','x3 Worker Efficiency', 500, 0, function() { return (workers['worker'].bought >= 25); }, 'multiplicative');
+	new Upgrade('doublebuilder','x2 Builder Efficiency', 250, 0, function() { return (workers['builder'].bought >= 5); }, 'multiplicative');
+	new Upgrade('triplebuilder','x3 Builder Efficiency', 1250, 0, function() { return (workers['builder'].bought >= 25); }, 'multiplicative');
+	new Upgrade('doublefactory','x2 Factory Efficiency', 500, 0, function() { return (workers['factory'].bought >= 5); }, 'multiplicative');	
+	new Upgrade('triplefactory','x2 Factory Efficiency', 2500, 0, function() { return (workers['factory'].bought >= 25); }, 'multiplicative');
+	new Upgrade('doublelargefactory','x2 Large Factory Efficiency', 1000, 0, function() { return (workers['largefactory'].bought >= 5); }, 'multiplicative');
+	new Upgrade('triplelargefactory','x2 Large Factory Efficiency', 5000, 0, function() { return (workers['largefactory'].bought >= 25); }, 'multiplicative');
+	new Upgrade('doublehugefactory','x2 Huge Factory Efficiency', 7500, 0, function() { return (workers['hugefactory'].bought >= 5); }, 'multiplicative');
+	new Upgrade('triplehugefactory','x2 Huge Factory Efficiency', 25000, 0, function() { return (workers['hugefactory'].bought >= 25); }, 'multiplicative');
 }
 
 function createWorkers() {
-	new Game.Worker('worker','Worker', 1, 10, function() { return (Game.moneyCurrent >= 5); });
-	new Game.Worker('builder','Builder', 3, 25, function() { return (Game.moneyCurrent >= 15); });
-	new Game.Worker('factory','Factory', 10, 100, function() { return (Game.moneyCurrent >= 75); });
-	new Game.Worker('largefactory','Large Factory', 25, 250, function() { return (Game.moneyCurrent >= 175); });
-	new Game.Worker('hugefactory','Huge Factory', 100, 2500, function() { return (Game.moneyCurrent >= 1500); });
+	new Worker('worker','Worker', 1, 10, function() { return (currentValues.moneyCurrent >= 5); });
+	new Worker('builder','Builder', 3, 25, function() { return (currentValues.moneyCurrent >= 15); });
+	new Worker('factory','Factory', 10, 100, function() { return (currentValues.moneyCurrent >= 75); });
+	new Worker('largefactory','Large Factory', 25, 250, function() { return (currentValues.moneyCurrent >= 175); });
+	new Worker('hugefactory','Huge Factory', 100, 2500, function() { return (currentValues.moneyCurrent >= 1500); });
 }
 
 var updateTimer = {
@@ -202,7 +203,7 @@ update = function() {
 	}
 	//Update the alltime clicks counter in the stats page, if needed.
  	if(updateRequired.clicksAllTime) {
-		$('#clicks_all_time').html(Game.clicksAllTime);
+		$('#clicks_all_time').html(currentValues.clicksAllTime);
 		updateRequired.clicksAllTime = false;
 	}
 	if(updateRequired.workerEfficiency) {
@@ -237,13 +238,13 @@ update = function() {
 
 	//Increase current money by fractions of money per second,
 	//based on current tick rate.
-    Game.moneyCurrent += currentValues.moneyPerSecond * updateTimer.secondsElapsed;
-    Game.moneyAllTime += currentValues.moneyPerSecond * updateTimer.secondsElapsed;
+    currentValues.moneyCurrent += currentValues.moneyPerSecond * updateTimer.secondsElapsed;
+    currentValues.moneyAllTime += currentValues.moneyPerSecond * updateTimer.secondsElapsed;
 	
 	//Draw the player's new money quantities.
-	$('#money_current').html(formatNumber(Game.moneyCurrent));
-	$('#money_all_time').html(formatNumber(Game.moneyAllTime));
-	jQuery.attr("title", "$"+formatNumber(Game.moneyCurrent)+" - Clicker Game "+Game.version);
+	$('#money_current').html(formatNumber(currentValues.moneyCurrent));
+	$('#money_all_time').html(formatNumber(currentValues.moneyAllTime));
+	jQuery.attr("title", "$"+formatNumber(currentValues.moneyCurrent)+" - Clicker Game "+currentValues.version);
 	
 	
 	//Set the current time for the next iteration of the timer.
@@ -253,11 +254,151 @@ update = function() {
     setTimeout(update, 1000/20);
 }
 
+Game = function() {
+	version = 0,
+	moneyCurrent = 0,
+	moneyAllTime = 0,
+	clicksAllTime = 0
+}
+
+function createSave() {
+	log("Creating save...");
+	var createdGame = new Game();
+	
+	createdGame.version = currentValues.version;
+	createdGame.moneyCurrent = currentValues.moneyCurrent;
+	createdGame.moneyAllTime = currentValues.moneyAllTime;
+	createdGame.clicksAllTime = currentValues.clicksAllTime;
+	
+	createdGame.purchasedUpgrades = [];
+	for(var i in upgrades) {
+		log(i);
+		createdGame.purchasedUpgrades[upgrades[i].id] = upgrades[i].bought;
+		log(createdGame.purchasedUpgrades[i]+":"+upgrades[i].bought);
+	}
+	createdGame.purchasedWorkers = [];
+	for(var i in workers) {
+		log(i);
+		createdGame.purchasedWorkers[workers[i].id] = workers[i].bought;
+		log(createdGame.purchasedWorkers[workers[i].id]+":"+workers[i].bought);
+	}
+	log(JSON.stringify(createdGame));
+	return createdGame;
+}
+
+//Store the current game in local storage.
+function storeSave() {
+	log("Storing save...");
+	var currentGame = createSave();
+    localStorage.setItem("saveGame", encodeSave(JSON.stringify(currentGame)));
+}
+
+//Convert an old save into a current save based on the version number.
+function convertSaveToGame(gameObject) {
+	log("Converting save...");
+	if(gameObject.version == undefined) {
+		$('#message_options_load').html("Error getting save version.");
+		//Just return the current game.
+		return createSave();	
+	}
+	var savedGame = new Game();
+	savedGame.purchasedUpgrades = [];
+	savedGame.purchasedWorkers = [];
+
+	switch(gameObject.version) {
+		case ("v0.3"):
+			for(var i in workers) {
+				savedGame.purchasedWorkers[workers[i].id] = gameObject.purchasedWorkers[workers[i].id];
+			}
+			for(var i in upgrades) {
+				savedGame.purchasedUpgrades[upgrades[i].id] = gameObject.purchasedUpgrades[upgrades[i].id];
+			}
+			//Fall through.
+		default:
+			savedGame.moneyCurrent = gameObject.moneyCurrent;
+			savedGame.moneyAllTime = gameObject.moneyAllTime;
+			savedGame.clicksAllTime = gameObject.clicksAllTime;
+			break;		
+	}
+	return savedGame;
+}
+
+//Convert save string to Base64
+function encodeSave(gameObject) {
+	log("encoding...");
+	log(gameObject);
+	log(window.btoa(gameObject));
+	return window.btoa(gameObject);
+}
+//Convert save string from Base64
+function decodeSave(gameString) {
+	log("decoding...");
+	log(gameString);
+	log(window.atob(gameString));
+	return window.atob(gameString);
+}
+
+//Override the current game in the browser with
+//the specified save game.
+function commitSave(gameObject) {
+	log("Committing save...");
+	currentValues.moneyCurrent = gameObject.moneyCurrent;
+	currentValues.moneyAllTime = gameObject.moneyAllTime;
+	currentValues.clicksAllTime = gameObject.clicksAllTime;
+	for(var i in gameObject.purchasedUpgrades) {
+		upgradesByID[i].bought = gameObject.purchasedUpgrades[i];	
+	}
+	for(var i in gameObject.purchasedWorkers) {
+		workersByID[i].bought = gameObject.purchasedWorkers[i];
+	}
+	updateRequired.moneyPerSecond = true;
+	updateRequired.moneyPerClick = true;
+	updateRequired.clicksAllTime = true;
+	updateRequired.workerEfficiency = true;
+	updateRequired.storeUpgrades = true;
+	updateRequired.storeWorkers = true;
+	updateRequired.workerPrices = true;
+	updateRequired.upgradePrices = true;
+	updateRequired.totalWorkers = true;
+	updateRequired.currentUpgrades = true;
+}
+
+//Load a game from local storage.
+function loadSave() {
+	log("Loading save...");
+	var savedGameString = localStorage.getItem("saveGame");
+	var savedGameObject = JSON.parse(decodeSave(savedGameString));
+	var updatedGameObject = convertSaveToGame(savedGameObject);
+	commitSave(updatedGameObject);
+}
+
+//Import a saved game. Run when the Import button is pressed.
+function importSave() {
+	log("Importing save...");
+	var savedGameString = $('#text_area_import').val();
+	if(savedGameString != null && savedGameString != undefined && savedGameString != "") {
+		var importedGameObject = JSON.parse(decodeSave(savedGameString));
+		var updatedImportedGameObject = convertSaveToGame(importedGameObject);
+		commitSave(updatedImportedGameObject);
+	}
+}
+
+//Export a saved game. Run when the Export button is pressed.
+function exportSave() {
+	log("Exporting save...");
+	var currentGameObject = createSave();
+	log(JSON.stringify(currentGameObject));
+	var currentGameString = encodeSave(JSON.stringify(currentGameObject));
+	log(currentGameString);
+	$('#text_area_export').empty();
+	$('#text_area_export').val(currentGameString);
+}
+
 //Ran when the dollar button is clicked.
 function onMoneyClicked() {
-    Game.moneyCurrent += currentValues.moneyPerClick;
-    Game.moneyAllTime += currentValues.moneyPerClick;
-	Game.clicksAllTime++;
+    currentValues.moneyCurrent += currentValues.moneyPerClick;
+    currentValues.moneyAllTime += currentValues.moneyPerClick;
+	currentValues.clicksAllTime++;
 	updateRequired.clicksAllTime = true;
 }
 
@@ -336,6 +477,7 @@ var updateFunctions = {
 				if(workers[i].unlocked()) {
 					//Upgrade has been unlocked, redraw store.
 					currentValues.unlockedWorkers[i].unlocked = true;
+					currentValues.unlockedWorkersByID[workers[i].id] = true;
 					updateRequired.storeWorkers = true;
 				}
 			}
@@ -427,13 +569,15 @@ var updateFunctions = {
 		return currentValues.upgradePrices[a.name] - currentValues.upgradePrices[b.name];
 	},
 	storeUpgradesPurchasable : function() {
+		var purchasableUpgrades = 0;
 		for(var i in upgrades) {
 			if(currentValues.unlockedUpgrades[i].unlocked) {
 				if(upgrades[i].bought == 0) {
-					if(Game.moneyCurrent < currentValues.upgradePrices[i]) {
+					if(currentValues.moneyCurrent < currentValues.upgradePrices[i]) {
 						$("#button_buy_"+i).addClass("buybuttonlocked");
 					} else {
 						$("#button_buy_"+i).removeClass("buybuttonlocked");	
+						purchasableUpgrades++;
 					}
 				} else {
 					$("#button_buy_"+i).removeClass("buybuttonlocked");	
@@ -443,11 +587,15 @@ var updateFunctions = {
 							  +"<br><b style=\"font-size: 50%\">"+upgrades[i].description+"</b>")
 			}
 		}
+		if(purchasableUpgrades != 0)
+			updateFunctions.redoFavicon(true);
+		else
+			updateFunctions.redoFavicon(false);
 	},
 	storeWorkersPurchasable : function() {
 		for(var i in workers) {
 			if(currentValues.unlockedWorkers[i].unlocked) {
-				if(Game.moneyCurrent < currentValues.workerPrices[i]) {
+				if(currentValues.moneyCurrent < currentValues.workerPrices[i]) {
 					$("#button_buy_"+workers[i].name).addClass("buybuttonlocked");
 				} else {
 					$("#button_buy_"+workers[i].name).removeClass("buybuttonlocked");	
@@ -508,24 +656,33 @@ var updateFunctions = {
 			totalUpgrades++;	
 		}
 		currentValues.currentUpgrades = currentUpgrades;
-		$('current_upgrades').html(currentUpgrades);
-		$('total_upgrades').html(totalUpgrades);
+		$('#current_upgrades').html(currentUpgrades);
+		$('#total_upgrades').html(totalUpgrades);
 			
+	},
+	redoFavicon : function(boolean) {
+		var active = "./img/ico-active.ico";
+		var inactive = "./img/ico-inactive.ico";
+		if(boolean) {
+			$('#favicon').attr("href", active);
+		} else {
+			$('#favicon').attr("href", inactive);
+		}
 	}
 };
 
 function cheat() {
 	log("Fine, if you really want to cheat,");
 	log("here's some free money. Go wild.");
-	Game.moneyCurrent += 999999999;
-	Game.moneyAllTime += 999999999;	
+	currentValues.moneyCurrent += 999999999;
+	currentValues.moneyAllTime += 999999999;	
 }
 
 function log(input) {
 	//Game is still loading.
-	if(Game.version == undefined) {
+	if(currentValues.version == undefined) {
 		console.log(input);	
 	} else {
-		console.log("Clicker Game "+Game.version+": "+input);
+		console.log("Clicker Game "+currentValues.version+": "+input);
 	}
 }

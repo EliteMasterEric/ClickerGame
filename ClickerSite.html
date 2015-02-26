@@ -13,6 +13,7 @@
 <head>
 <meta charset="utf-8">
 <title>Clicker Game</title>
+<link rel="shortcut icon" id="favicon" type="image/png" href="./img/ico-inactive.ico"/>
 <link href="HTML5_ClickerSite.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 <script type="text/javascript" src="http://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
@@ -55,13 +56,24 @@
    			</div>
             <div class="menucontents" style="display:none" id="menucontents_options">
             	<br>
-				Format Type:
+				<b>Format Type:</b>
                 <br><input name="formatType" type="radio" value="words">Words</input>
 				<br><input name="formatType" type="radio" value="abbreviations">Abbreviations</input>
    				<br><input name="formatType" type="radio" value="exponential">Exponential</input>
                 <br><input name="formatType" type="radio" value="raw" checked="checked">Raw</input>
+                <br><br>
+                <b>Save/Load:</b>
                 <br>
-                Save/Load: (COMING SOON)
+                <button id="button_options_save" onClick="storeSave()">Save Game</button>
+                <button id="button_options_load" onClick="loadSave()">Load Game</button>
+                <br><br>
+                <button id="button_options_import" onClick="importSave()">Import Game</button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button id="button_options_export" onClick="exportSave()">Export Game</button>
+                <br>
+                <textarea id="text_area_import" class="textfieldsaves"></textarea>
+                <textarea id="text_area_export" class="textfieldsaves" readonly></textarea>
+                <br>
    			</div>
 		</div>
 	</div>
