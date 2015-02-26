@@ -1,14 +1,5 @@
 //HTML elements, as variables for ease of use.
 //underscores_between_words designate DOM elements, while lowerCamelCase repressents JavaScript variables.
-//Buttons
-var button_menu_stats; //Option 0
-var button_menu_options; //Option 1
-//Menu Contents
-var menucontents_stats; //Option 0
-var menucontents_options; //Option 1
-//Stats fields
-var current_upgrades;
-var total_upgrades;
 //Options fields
 var selectedMenuOption;
 var selectedMenuOptionLast;
@@ -21,15 +12,7 @@ $(document).ready(function(){
     
     log('Initializing tab menu variables...');
     //Set elements to variables for convenience.
-    //Buttons
-    button_menu_stats = document.getElementById("button_menu_stats");
-    button_menu_options = document.getElementById("button_menu_options");
-	//Menus
-	menucontents_stats = document.getElementById("menucontents_stats");
-	menucontents_options = document.getElementById("menucontents_options");
-	//Stats fields
-	current_upgrades = document.getElementById("current_upgrades");
-	total_upgrades = document.getElementById("total_upgrades");
+
 	//Run methods.
 	drawMenu();
 
@@ -47,22 +30,20 @@ function drawMenu() {
 		//Set what to display.
 		switch(selectedMenuOption) {
 			case 0:
-				button_menu_stats.className = "menubutton menubuttonselected";
-				button_menu_options.className = "menubutton";
-				menucontents_stats.style = "display:block";
-				menucontents_options.style = "display:none";
+				$('#button_menu_stats').addClass("menubutton");
+				$('#button_menu_stats').addClass("menubuttonselected");
+				$('#button_menu_options').addClass("menubutton");
+				$('#button_menu_options').removeClass("menubuttonselected");
+				$('#menucontents_stats').attr("style", "display:block");
+				$('#menucontents_options').attr("style", "display:none");
 				break;
 			case 1:
-				button_menu_stats.className = "menubutton";
-				button_menu_options.className = "menubutton menubuttonselected";
-				menucontents_stats.style = "display:none";
-				menucontents_options.style = "display:block";
-				break;
-			default:
-				button_menu_stats.className = "menubutton menubuttonselected";
-				button_menu_options.className = "menubutton";
-				menucontents_stats.style = "display:none";
-				menucontents_options.style = "display:block";
+				$('#button_menu_stats').addClass("menubutton");
+				$('#button_menu_stats').removeClass("menubuttonselected");
+				$('#button_menu_options').addClass("menubutton");
+				$('#button_menu_options').addClass("menubuttonselected");
+				$('#menucontents_stats').attr("style", "display:none");
+				$('#menucontents_options').attr("style", "display:block");
 				break;
 		}
 	}

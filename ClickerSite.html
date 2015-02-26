@@ -12,7 +12,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Clicker</title>
+<title>Clicker Game</title>
 <link href="HTML5_ClickerSite.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 <script type="text/javascript" src="http://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
@@ -26,11 +26,10 @@
     </div>
     
 	<div class="containerside" id="container_left" style="float:left">
-		<div class="upgradescolumn" id="column_upgrades">
-        	<div class="columnheader">
+       	<div class="columnheader">
 	    		<p>Upgrades</p>
-            </div>
-		</div>
+        </div>
+		<div class="upgradescolumn" id="column_upgrades"></div>
 	</div>
     
 	<div class="containercenter" id="container_center" style="float:left">
@@ -51,14 +50,15 @@
             	$<b id="money_all_time"> -1 </b> all time earnings<br>
               	<b id="clicks_all_time"> -1 </b> all time clicks<br>
                 <br>
-                <b id="current_upgrades">-1</b>/<b id="total_upgrades">-1</b> upgrades purchased
+                <b id="current_upgrades">-1</b>/<b id="total_upgrades">-1</b> upgrades purchased<br>
+                <b id="total_workers">-1</b> workers purchased
    			</div>
             <div class="menucontents" style="display:none" id="menucontents_options">
             	<br>
-				Format Type: (DISABLED)
-                <br><input name="formatType" type="radio" disabled="true" value="words">Words</input>
-				<br><input name="formatType" type="radio" disabled="true" value="abbreviations">Abbreviations</input>
-   				<br><input name="formatType" type="radio" disabled="true" value="exponential">Exponential</input>
+				Format Type:
+                <br><input name="formatType" type="radio" value="words">Words</input>
+				<br><input name="formatType" type="radio" value="abbreviations">Abbreviations</input>
+   				<br><input name="formatType" type="radio" value="exponential">Exponential</input>
                 <br><input name="formatType" type="radio" value="raw" checked="checked">Raw</input>
                 <br>
                 Save/Load: (COMING SOON)
@@ -67,16 +67,14 @@
 	</div>
     
     <div class="containerside" style="float:left">
-    	<div class="workerscolumn" id="column_workers">
-        	<div class="columnheader">
+        <div class="columnheader">
 	    		<p>Workers</p>
             </div>
-            
-		</div>
+    	<div class="workerscolumn" id="column_workers"></div>
 	</div>
     
     <div class="footer">
-    Footer
+    <a href="https://github.com/MasterEric/MasterEric.github.io/">Check out Clicker Game on Github!</a>
     </div>
 </body>
 </html>
